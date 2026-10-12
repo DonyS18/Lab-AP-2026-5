@@ -1,0 +1,70 @@
+ALFABET = "abcdefghijklmnopqrstuvwxyz"
+
+
+def cek_kata(teks, kata):
+    hasil = []
+
+    teks_kecil = teks.lower()
+    kata_kecil = kata.lower()
+
+    start = 0
+
+    while True:
+        indeks = teks_kecil.find(kata_kecil, start)
+
+        if indeks == -1:
+            break
+
+        hasil.append(indeks)
+        start = indeks + len(kata_kecil)
+
+    return hasil
+
+
+def cek_batas_kata(teks, i, panjang):
+    sebelum = i - 1
+    sesudah = i + panjang
+
+    if sebelum >= 0:
+        if teks[sebelum].lower() in ALFABET:
+            return False
+
+    if sesudah < len(teks):
+        if teks[sesudah].lower() in ALFABET:
+            return False
+
+    return True
+
+
+def sensor_kata(teks, kata, simbol):
+    indeks_kemunculan = cek_kata(teks, kata)
+
+    hasil = ""
+    jumlah = 0
+    indeks_sensor = []
+
+    posisi = 0
+
+    for i in indeks_kemunculan:
+        if cek_batas_kata(teks, i, len(kata)):
+            hasil += teks[posisi:i]
+            hasil += simbol * len(kata)
+
+            posisi = i + len(kata)
+            jumlah += 1
+            indeks_sensor.append(i)
+
+    hasil += teks[posisi:]
+
+    return hasil, jumlah, indeks_sensor
+
+
+teks = input("Masukkan teks: ")
+kata = input("Kata yang ingin disensor: ")
+simbol = input("Masukkan simbol sensor: ")
+
+hasil, jumlah, indeks = sensor_kata(teks, kata, simbol)
+
+print("Teks tersensor:", hasil)
+print("Jumlah tersensor:", jumlah)
+print("Indeks awal:", indeks)
